@@ -1,0 +1,13 @@
+{
+  "intents": [
+    {
+      "intent": "StartFeed",
+      "slots": [
+        {
+          "name": "BreastSide",
+          "type": "DIRECTION"
+        }
+      ]
+    }
+  ]
+}
