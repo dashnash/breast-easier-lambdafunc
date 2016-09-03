@@ -7,14 +7,17 @@ For additional samples, visit the Alexa Skills Kit Getting Started guide at
 http://amzn.to/1LGWsLG
 """
 
+import logging
 from __future__ import print_function
+
 
 def lambda_handler(event, context):
     """ Route the incoming request based on type (LaunchRequest, IntentRequest,
     etc.) The JSON body of the request is provided in the event parameter.
     """
-    print("event.session.application.applicationId=" +
-          event['session']['application']['applicationId'])
+    logging.basicConfig(level=logging.DEBUG)
+    logging.debug("event.session.application.applicationId=" +
+                  event['session']['application']['applicationId'])
 
     """
     Uncomment this if statement and populate with your skill's application ID to
@@ -40,8 +43,8 @@ def lambda_handler(event, context):
 def on_session_started(session_started_request, session):
     """ Called when the session starts """
 
-    print("on_session_started requestId=" + session_started_request['requestId']
-          + ", sessionId=" + session['sessionId'])
+    logging.debug("on_session_started requestId=" + session_started_request['requestId']
+                  + ", sessionId=" + session['sessionId'])
 
 
 def on_launch(launch_request, session):
@@ -49,8 +52,8 @@ def on_launch(launch_request, session):
     want
     """
 
-    print("on_launch requestId=" + launch_request['requestId'] +
-          ", sessionId=" + session['sessionId'])
+    logging.debug("on_launch requestId=" + launch_request['requestId'] +
+                  ", sessionId=" + session['sessionId'])
     # Dispatch to your skill's launch
     return get_welcome_response()
 
@@ -58,21 +61,17 @@ def on_launch(launch_request, session):
 def on_intent(intent_request, session):
     """ Called when the user specifies an intent for this skill """
 
-    print("on_intent requestId=" + intent_request['requestId'] +
-          ", sessionId=" + session['sessionId'])
+    logging.debug("on_intent requestId=" + intent_request['requestId'] +
+                  ", sessionId=" + session['sessionId'])
 
     intent = intent_request['intent']
     intent_name = intent_request['intent']['name']
 
     # Dispatch to your skill's intent handlers
-    if intent_name == "MyColorIsIntent":
+    if intent_name == "StartFeed":
         return set_color_in_session(intent, session)
-    elif intent_name == "WhatsMyColorIntent":
+    elif intent_name == "EndFeed":
         return get_color_from_session(intent, session)
-    elif intent_name == "AMAZON.HelpIntent":
-        return get_welcome_response()
-    elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
-        return handle_session_end_request()
     else:
         raise ValueError("Invalid intent")
 
@@ -82,8 +81,8 @@ def on_session_ended(session_ended_request, session):
 
     Is not called when the skill returns should_end_session=true
     """
-    print("on_session_ended requestId=" + session_ended_request['requestId'] +
-          ", sessionId=" + session['sessionId'])
+    logging.debug("on_session_ended requestId=" + session_ended_request['requestId'] +
+                  ", sessionId=" + session['sessionId'])
     # add cleanup logic here
 
 # --------------- Functions that control the skill's behavior ------------------
@@ -201,9 +200,10 @@ def build_response(session_attributes, speechlet_response):
         'response': speechlet_response
     }
 
+
 def main():
     pass
 
 
-if __name == "__main__":
+if __name__ == "__main__":
     main()
