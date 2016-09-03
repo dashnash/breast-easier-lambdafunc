@@ -8,6 +8,10 @@
           "type": "DIRECTION"
         }
       ]
+    },
+    {
+      "intent": "EndFeed",
+      "slots": []
     }
   ]
 }
