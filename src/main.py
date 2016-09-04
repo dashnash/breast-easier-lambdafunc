@@ -8,7 +8,6 @@ http://amzn.to/1LGWsLG
 """
 
 import logging
-from __future__ import print_function
 
 
 def lambda_handler(event, context):
@@ -24,9 +23,9 @@ def lambda_handler(event, context):
     prevent someone else from configuring a skill that sends requests to this
     function.
     """
-    # if (event['session']['application']['applicationId'] !=
-    #         "amzn1.echo-sdk-ams.app.[unique-value-here]"):
-    #     raise ValueError("Invalid Application ID")
+    if (event['session']['application']['applicationId'] !=
+            "amzn1.ask.skill.03df35c2-53f4-4120-9e96-30d5b05b9df4"):
+        raise ValueError("Invalid Application ID")
 
     if event['session']['new']:
         on_session_started({'requestId': event['request']['requestId']},
@@ -69,11 +68,30 @@ def on_intent(intent_request, session):
 
     # Dispatch to your skill's intent handlers
     if intent_name == "StartFeed":
-        return set_color_in_session(intent, session)
+        return start_feed(intent, session)
     elif intent_name == "EndFeed":
-        return get_color_from_session(intent, session)
+        return end_feed(intent, session)
     else:
         raise ValueError("Invalid intent")
+
+def start_feed(intent, session):
+    """ Records the start of the feed and side, and builds return message"""
+    card_title = intent['name']
+    side = intent['slots']['BreastSide']['value']
+    speech_output = "Starting feeding on the {0} side. " \
+                    "You are more than just a milk machine.".format(side)
+    should_end_session = False
+
+    return build_response({}, build_speechlet_response(card_title, speech_output, None,
+                                                       should_end_session))
+
+def end_feed(intent, session):
+    """ Ends the feed and builds the return message"""
+    card_title = intent['name']
+    speech_output = "Thank you for tracking you're nursing with breast easier." \
+                    "Nice tits, Stepanie."
+
+    return build_response({}, build_speechlet_response(card_title, speech_output, None, True))
 
 
 def on_session_ended(session_ended_request, session):
@@ -95,13 +113,13 @@ def get_welcome_response():
 
     session_attributes = {}
     card_title = "Welcome"
-    speech_output = "Welcome to the Alexa Skills Kit sample. " \
-                    "Please tell me your favorite color by saying, " \
-                    "my favorite color is red"
+    speech_output = "Welcome to Breast Easier. " \
+                    "Please start tracking a session by saying, " \
+                    "Start nursing on my right or left side."
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
-    reprompt_text = "Please tell me your favorite color by saying, " \
-                    "my favorite color is red."
+    reprompt_text = "Please start tracking a session by saying, " \
+                    "Start nursing on my right or left side."
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
@@ -109,7 +127,7 @@ def get_welcome_response():
 
 def handle_session_end_request():
     card_title = "Session Ended"
-    speech_output = "Thank you for trying the Alexa Skills Kit sample. " \
+    speech_output = "Thank you for using breast easier. " \
                     "Have a nice day! "
     # Setting this to true ends the session and exits the skill.
     should_end_session = True
