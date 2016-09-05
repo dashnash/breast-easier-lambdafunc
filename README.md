@@ -1,2 +1,2 @@
 # breast-easier-lambdafunc
-AWS Lambda deployment package implementation for Breas-Easier Alexa Skill
+AWS Lambda deployment package implementation for Breast-Easier Alexa Skill
