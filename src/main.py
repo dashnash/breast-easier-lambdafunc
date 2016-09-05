@@ -88,8 +88,8 @@ def start_feed(intent, session):
 def end_feed(intent, session):
     """ Ends the feed and builds the return message"""
     card_title = intent['name']
-    speech_output = "Thank you for tracking you're nursing with breast easier." \
-                    "Nice tits, Stepanie."
+    speech_output = "Thank you for tracking you're nursing with breast easier. " \
+                    "Nice jugs, Stephanie."
 
     return build_response({}, build_speechlet_response(card_title, speech_output, None, True))
 
